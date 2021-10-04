@@ -60,15 +60,13 @@ impl Character {
             money: 150_000,
         };
 
-        let vec = match n {
+        match n {
             1 => vec![first],
             2 => vec![first, second],
             3 => vec![first, second, third],
             4 => vec![first, second, third, fourth],
             _ => vec![],
-        };
-
-        vec
+        }
     }
 }
 
