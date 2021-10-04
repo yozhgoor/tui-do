@@ -11,30 +11,27 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-
       - name: Install toolchain
         uses: hecrj/setup-rust-action@v1
         with:
           targets: x86_64-unknown-linux-musl
-
       - name: Build release (Linux)
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --target=x86_64-unknown-linux-musl
-        - run: strip target/x86_64-unknown-linux-musl/release/tui-do
-        - uses: actions/upload-artifact@v2
-          with:
-            name: build-linux
-            path: |
-              target/x86_64-unknown-linux-musl/release/tui-do
+      - run: strip target/x86_64-unknown-linux-musl/release/tui-do
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-linux
+          path: |
+            target/x86_64-unknown-linux-musl/release/tui-do
 
     build-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
-
       - name: Build release (OSX)
         uses: actions-rs/cargo@v1
         with:
@@ -53,19 +50,16 @@ release:
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-
     - uses: actions/download-artifact@v2
       with:
         name: build-linux
         path: build-linux
     - run: mv build-linux/tui-do build-linux/tui-do-${{ steps.get_version.outputs.VERSION }}-linux-x86_64
-
     - uses: actions/downloads-artifact@v2
       with:
         name: build-macos
         path: build-macos
     - run: mv build-macos/tui-do build-macos/tui-do-${{ steps.get_version.outputs.VERSION }}-macos-x86_64
-
     - name: Release
       uses: softprops/action-gh-release@v1
       env:
