@@ -26,6 +26,50 @@ impl Character {
             self.lvl
         )
     }
+
+    pub fn mock(n: u8) -> Vec<Character> {
+        let first = Character {
+            name: String::from("Frodo"),
+            class: Class::Rogue,
+            lvl: 300,
+            exp: 270,
+            money: 100_000_000,
+        };
+
+        let second = Character {
+            name: String::from("Gandalf"),
+            class: Class::Mage,
+            lvl: 700,
+            exp: 999,
+            money: 0,
+        };
+
+        let third = Character {
+            name: String::from("Legolas"),
+            class: Class::Hunter,
+            lvl: 549,
+            exp: 15,
+            money: 160_000,
+        };
+
+        let fourth = Character {
+            name: String::from("Gimli"),
+            class: Class::Warrior,
+            lvl: 549,
+            exp: 12,
+            money: 150_000,
+        };
+
+        let vec = match n {
+            1 => vec![first],
+            2 => vec![first, second],
+            3 => vec![first, second, third],
+            4 => vec![first, second, third, fourth],
+            _ => vec![],
+        };
+
+        vec
+    }
 }
 
 #[derive(Clone)]

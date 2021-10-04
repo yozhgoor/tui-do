@@ -18,7 +18,10 @@ fn main() {
     siv.add_global_callback('q', |s| s.quit());
     siv.set_user_data(Data::new());
 
-    let character_list = &siv.user_data::<Data>().unwrap().character_list;
+    let character_list = &mut siv.user_data::<Data>().unwrap().character_list;
+    for character in Character::mock(4) {
+        character_list.insert(character.name.clone(), character);
+    }
 
     let character_select = SelectView::<Character>::new()
         .on_submit(get_dashboard)
