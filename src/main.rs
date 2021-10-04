@@ -24,7 +24,7 @@ fn main() {
         .on_submit(get_dashboard)
         .with_all(
             character_list
-                .into_iter()
+                .iter()
                 .map(|(_, v)| (v.display_for_selection(), v.clone())),
         )
         .with_name("character_select")
