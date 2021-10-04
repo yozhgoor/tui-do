@@ -1,40 +1,9 @@
 use cursive::traits::*;
-use cursive::views::{Button, Dialog, DummyView, EditView, LinearLayout, SelectView, TextView};
+use cursive::views::{Dialog, EditView, LinearLayout, SelectView, TextView};
 use cursive::Cursive;
 
 use crate::character::{Character, Class};
-use crate::dashboard::get_dashboard;
 use crate::data::Data;
-
-pub fn character_selection(siv: &mut Cursive) {
-    let character_list = &siv.user_data::<Data>().unwrap().character_list;
-
-    let select = SelectView::<Character>::new()
-        .on_submit(get_dashboard)
-        .with_all(
-            character_list
-                .into_iter()
-                .map(|(_, v)| (v.display_for_selection(), v.clone())),
-        )
-        .with_name("character_select")
-        .fixed_size((80, 20));
-
-    let buttons = LinearLayout::vertical()
-        .child(Button::new("Add new", create_character))
-        .child(Button::new("Delete", delete_character))
-        .child(DummyView)
-        .child(Button::new("Quit", Cursive::quit));
-
-    siv.add_layer(
-        Dialog::around(
-            LinearLayout::horizontal()
-                .child(select)
-                .child(DummyView)
-                .child(buttons),
-        )
-        .title("Select a character"),
-    );
-}
 
 pub fn create_character(siv: &mut Cursive) {
     siv.add_layer(
