@@ -27,7 +27,7 @@ jobs:
           path: |
             target/x86_64-unknown-linux-musl/release/tui-do
 
-    build-macos:
+  build-macos:
     runs-on: macos-latest
     steps:
       - name: Checkout source
@@ -37,11 +37,11 @@ jobs:
         with:
           command: build
           args: --release --target=x86_64-apple-darwin
-        - uses: actions/upload-artifact@v2
-          with:
-            name: build-macos
-            path: |
-              target/x86_64-apple-darwin/release/tui-do
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-macos
+          path: |
+            target/x86_64-apple-darwin/release/tui-do
 
 release:
   need: [build-linux, build-macos]
