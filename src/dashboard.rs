@@ -10,7 +10,7 @@ pub fn get_dashboard(s: &mut Cursive, character: &Character) {
     s.add_layer(
         Dialog::around(
             LinearLayout::vertical()
-                .child(TextView::new(format!("{}", character.name)))
+                .child(TextView::new(character.name.clone()))
                 .child(TextView::new(character.class.display()))
                 .child(DummyView)
                 .child(TextView::new(format!("Money: {}$", character.money)))
