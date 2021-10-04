@@ -7,20 +7,11 @@ use crate::data::Data;
 
 pub fn create_character(siv: &mut Cursive) {
     siv.add_layer(
-        Dialog::new()
-            .title("Enter a name")
-            .content(
-                EditView::new()
-                    .on_submit(select_class)
-                    .with_name("new_name"),
-            )
-            .button("Ok", |s| {
-                let name = s
-                    .call_on_name("new_character_name", |v: &mut EditView| v.get_content())
-                    .unwrap();
-
-                select_class(s, &name);
-            }),
+        Dialog::new().title("Enter a name").content(
+            EditView::new()
+                .on_submit(select_class)
+                .with_name("new_name"),
+        ),
     );
 }
 
