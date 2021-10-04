@@ -19,7 +19,7 @@ fn main() {
     siv.set_user_data(Data::new());
 
     let character_list = &mut siv.user_data::<Data>().unwrap().character_list;
-    for character in Character::mock(4) {
+    for character in Character::mock() {
         character_list.insert(character.name.clone(), character);
     }
 
