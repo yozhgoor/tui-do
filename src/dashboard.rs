@@ -42,17 +42,21 @@ pub fn get_dashboard(s: &mut Cursive, character: Character) {
                             .max(1000)
                             .with_label(|v, (_, max)| format!("Rep: {}/{}", v, max))
                             .with_value(Counter::new(faction.reputation as usize)),
-                    ),
+                    )
+                    .child(DummyView),
             )
         }
     }
 
     let buttons = LinearLayout::horizontal()
-        .child(Button::new("Quests", move |s| {
-            get_quest_view(s, character.quests.clone())
+        .child(Button::new("Quests", {
+            let quests = character.quests.clone();
+            move |s| get_quest_view(s, quests.clone())
         }))
-        .child(Button::new("Factions", move |s| {
-            get_faction_view(s, character.factions.clone())
+        .child(DummyView)
+        .child(Button::new("Factions", {
+            let factions = character.factions.clone();
+            move |s| get_faction_view(s, factions.clone())
         }));
 
     character_info.add_child(buttons);
