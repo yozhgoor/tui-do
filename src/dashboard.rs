@@ -55,7 +55,7 @@ pub fn get_dashboard(s: &mut Cursive, character: Character) {
         }))
         .child(DummyView)
         .child(Button::new("Factions", {
-            let factions = character.factions.clone();
+            let factions = character.factions;
             move |s| get_faction_view(s, factions.clone())
         }));
 
