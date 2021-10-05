@@ -7,6 +7,6 @@ pub struct Faction {
     pub lvl: u32,
 }
 
-pub fn get_faction_view(s: &mut Cursive, factions: Vec<Faction>) {
+pub fn get_faction_view(s: &mut Cursive, _factions: Vec<Faction>) {
     s.quit()
 }
