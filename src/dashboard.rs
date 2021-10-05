@@ -7,7 +7,7 @@ use crate::character::Character;
 use crate::faction::get_faction_view;
 use crate::quest::get_quest_view;
 
-pub fn get_dashboard(s: &mut Cursive, character: Character) {
+pub fn get_dashboard(s: &mut Cursive, character: &Character) {
     let lvl_progress_bar = LinearLayout::vertical()
         .child(TextView::new(format!("Level : {}", character.lvl)))
         .child(
@@ -55,7 +55,7 @@ pub fn get_dashboard(s: &mut Cursive, character: Character) {
         }))
         .child(DummyView)
         .child(Button::new("Factions", {
-            let factions = character.factions;
+            let factions = character.factions.clone();
             move |s| get_faction_view(s, factions.clone())
         }));
 

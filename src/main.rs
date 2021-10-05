@@ -26,7 +26,7 @@ fn main() {
     }
 
     let character_select = SelectView::<Character>::new()
-        .on_submit(|s, c| get_dashboard(s, c.clone()))
+        .on_submit(|s, c| get_dashboard(s, c))
         .with_all(
             character_list
                 .iter()
