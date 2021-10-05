@@ -6,6 +6,8 @@ mod character;
 mod character_selection;
 mod dashboard;
 mod data;
+mod faction;
+mod quest;
 
 use crate::character::Character;
 use crate::character_selection::{create_character, delete_character};
@@ -18,10 +20,13 @@ fn main() {
     siv.add_global_callback('q', |s| s.quit());
     siv.set_user_data(Data::new());
 
-    let character_list = &siv.user_data::<Data>().unwrap().character_list;
+    let character_list = &mut siv.user_data::<Data>().unwrap().character_list;
+    for character in character::mock() {
+        character_list.insert(character.name.clone(), character);
+    }
 
     let character_select = SelectView::<Character>::new()
-        .on_submit(get_dashboard)
+        .on_submit(|s, c| get_dashboard(s, c))
         .with_all(
             character_list
                 .iter()
