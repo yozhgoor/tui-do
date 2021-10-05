@@ -47,6 +47,16 @@ pub fn get_dashboard(s: &mut Cursive, character: Character) {
         }
     }
 
+    let buttons = LinearLayout::horizontal()
+        .child(Button::new("Quests", move |s| {
+            get_quest_view(s, character.quests.clone())
+        }))
+        .child(Button::new("Factions", move |s| {
+            get_faction_view(s, character.factions.clone())
+        }));
+
+    character_info.add_child(buttons);
+
     s.pop_layer();
     s.add_layer(Dialog::around(character_info).fixed_size((80, 20)));
 }
