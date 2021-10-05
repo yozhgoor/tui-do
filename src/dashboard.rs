@@ -29,7 +29,7 @@ pub fn get_dashboard(s: &mut Cursive, character: Character) {
 
     if !character.factions.is_empty() {
         character_info.add_child(TextView::new("Factions:"));
-        for faction in character.factions.clone() {
+        for faction in &character.factions {
             character_info.add_child(
                 LinearLayout::vertical()
                     .child(TextView::new(format!(
