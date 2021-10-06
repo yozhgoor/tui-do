@@ -4,10 +4,10 @@ use cursive::views::{Button, Dialog, DummyView, LinearLayout, ProgressBar, TextV
 use cursive::Cursive;
 
 use crate::character::Character;
-use crate::faction::get_faction_view;
-use crate::quest::get_quest_view;
+use crate::faction_view;
+use crate::quest_view;
 
-pub fn get_dashboard(s: &mut Cursive, character: &Character) {
+pub fn draw(siv: &mut Cursive, character: &Character) {
     let lvl_progress_bar = LinearLayout::vertical()
         .child(TextView::new(format!("Level : {}", character.lvl)))
         .child(
@@ -51,16 +51,16 @@ pub fn get_dashboard(s: &mut Cursive, character: &Character) {
     let buttons = LinearLayout::horizontal()
         .child(Button::new("Quests", {
             let quests = character.quests.clone();
-            move |s| get_quest_view(s, quests.clone())
+            move |s| quest_view::draw_view(s, quests.clone())
         }))
         .child(DummyView)
         .child(Button::new("Factions", {
             let factions = character.factions.clone();
-            move |s| get_faction_view(s, factions.clone())
+            move |s| faction_view::draw_view(s, factions.clone())
         }));
 
     character_info.add_child(buttons);
 
-    s.pop_layer();
-    s.add_layer(Dialog::around(character_info).fixed_size((80, 20)));
+    siv.pop_layer();
+    siv.add_layer(Dialog::around(character_info).fixed_size((80, 20)));
 }
