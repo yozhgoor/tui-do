@@ -21,6 +21,7 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
 
     let faction_buttons = LinearLayout::vertical()
         .child(Button::new("Add new", create_item))
+        .child(Button::new("Rename", rename_item))
         .child(Button::new("Delete", delete_item))
         .child(DummyView)
         .child(Button::new("Back", move |siv| {
@@ -57,10 +58,7 @@ pub fn create_item(siv: &mut Cursive) {
                         let faction = Faction::new(name);
 
                         siv.call_on_name("faction_select", |view: &mut SelectView<Faction>| {
-                            view.add_item(
-                                format!("{} - Level: {}", faction.name, faction.lvl),
-                                faction.clone(),
-                            );
+                            view.add_item(faction.display_for_presentation(), faction.clone());
                         });
 
                         siv.pop_layer();
@@ -71,6 +69,37 @@ pub fn create_item(siv: &mut Cursive) {
                 siv.pop_layer();
             }),
     );
+}
+
+pub fn rename_item(siv: &mut Cursive) {
+    match siv
+        .find_name::<SelectView<Faction>>("faction_select")
+        .unwrap()
+        .selected_id()
+    {
+        None => siv.add_layer(Dialog::info("No faction to rename")),
+        Some(focus) => {
+            siv.add_layer(
+                Dialog::new()
+                    .title("Enter a new name")
+                    .content(EditView::new().on_submit(move |siv, name| {
+                        let mut select = siv
+                            .find_name::<SelectView<Faction>>("faction_select")
+                            .unwrap();
+                        let (_, item) = select.get_item_mut(focus).unwrap();
+                        let mut faction = item.clone();
+                        faction.name = name.to_string();
+                        select.add_item(faction.display_for_presentation(), faction);
+                        select.remove_item(focus);
+                        siv.pop_layer();
+                    }))
+                    .button("Back", |siv| {
+                        siv.pop_layer();
+                    })
+                    .with_name("rename_faction"),
+            );
+        }
+    }
 }
 
 pub fn delete_item(siv: &mut Cursive) {

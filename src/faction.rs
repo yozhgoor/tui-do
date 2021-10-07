@@ -13,4 +13,8 @@ impl Faction {
             lvl: 0,
         }
     }
+
+    pub fn display_for_presentation(&self) -> String {
+        format!("{} - Level {}", self.name, self.lvl)
+    }
 }
