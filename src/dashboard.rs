@@ -56,7 +56,6 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
         .child(DummyView)
         .child(Button::new("Factions", {
             siv.pop_layer();
-            let slug = slug.clone();
             move |siv| faction_view::draw_view(siv, slug.clone())
         }));
 
