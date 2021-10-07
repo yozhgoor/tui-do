@@ -93,7 +93,7 @@ pub fn rename_item(siv: &mut Cursive) {
                             .insert(name.to_string(), character.clone());
 
                         select.remove_item(focus);
-                        select.add_item(character.display_for_selection(), character.clone());
+                        select.add_item(character.display_for_selection(), character);
 
                         siv.pop_layer();
                     }))

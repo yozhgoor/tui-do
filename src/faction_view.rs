@@ -89,7 +89,7 @@ pub fn rename_item(siv: &mut Cursive) {
                         let (_, item) = select.get_item_mut(focus).unwrap();
                         let mut faction = item.clone();
                         faction.name = name.to_string();
-                        select.add_item(faction.display_for_presentation(), faction.clone());
+                        select.add_item(faction.display_for_presentation(), faction);
                         select.remove_item(focus);
                         siv.pop_layer();
                     }))
