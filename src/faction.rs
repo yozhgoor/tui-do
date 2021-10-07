@@ -1,12 +1,16 @@
-use cursive::Cursive;
-
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Faction {
     pub name: String,
     pub reputation: u32,
     pub lvl: u32,
 }
 
-pub fn get_faction_view(s: &mut Cursive, _factions: Vec<Faction>) {
-    s.quit()
+impl Faction {
+    pub fn new(name: &str) -> Faction {
+        Faction {
+            name: name.to_string(),
+            reputation: 0,
+            lvl: 0,
+        }
+    }
 }

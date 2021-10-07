@@ -1,6 +1,5 @@
-use std::collections::HashMap;
-
 use crate::character::Character;
+use std::collections::HashMap;
 
 pub struct Data {
     pub character_list: HashMap<String, Character>,
