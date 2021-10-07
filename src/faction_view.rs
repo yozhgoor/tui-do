@@ -1,5 +1,6 @@
 use crate::character::Character;
 use crate::dashboard;
+use crate::data::Data;
 use crate::faction::Faction;
 use cursive::traits::*;
 use cursive::views::{Button, Dialog, DummyView, EditView, LinearLayout, SelectView};
@@ -23,6 +24,16 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
         .child(Button::new("Delete", delete_item))
         .child(DummyView)
         .child(Button::new("Back", move |siv| {
+            let select_factions = siv
+                .call_on_name("faction_select", |view: &mut SelectView<Faction>| {
+                    view.iter()
+                        .map(|(_, faction)| faction.clone())
+                        .collect::<Vec<Faction>>()
+                })
+                .unwrap();
+            siv.with_user_data(|data: &mut Data| {
+                data.character_list.get_mut(&slug).unwrap().factions = select_factions;
+            });
             dashboard::draw_view(siv, slug.clone())
         }));
 
