@@ -59,9 +59,11 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
             siv.pop_layer();
             move |siv| faction_view::draw_view(siv, slug.clone())
         }))
-        .child(Button::new("Character selection", |siv| {
+        .child(DummyView)
+        .child(Button::new("Character", |siv| {
             character_view::draw_view(siv)
         }))
+        .child(DummyView)
         .child(Button::new("Quit", |siv| siv.quit()));
 
     character_info.add_child(buttons);
