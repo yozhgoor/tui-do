@@ -100,7 +100,7 @@ pub fn rename_item(siv: &mut Cursive) {
                     .button("Back", |siv| {
                         siv.pop_layer();
                     })
-                    .with_name("rename_item"),
+                    .with_name("rename_character"),
             );
         }
     }
