@@ -1,4 +1,5 @@
 use crate::character::Character;
+use crate::character_view;
 use crate::faction_view;
 use crate::quest_view;
 use cursive::traits::*;
@@ -57,7 +58,13 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
         .child(Button::new("Factions", {
             siv.pop_layer();
             move |siv| faction_view::draw_view(siv, slug.clone())
-        }));
+        }))
+        .child(DummyView)
+        .child(Button::new("Character", |siv| {
+            character_view::draw_view(siv)
+        }))
+        .child(DummyView)
+        .child(Button::new("Quit", |siv| siv.quit()));
 
     character_info.add_child(buttons);
 
