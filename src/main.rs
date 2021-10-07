@@ -1,3 +1,4 @@
+use crate::data::Data;
 use cursive::{Cursive, CursiveExt};
 
 mod character;
@@ -8,8 +9,6 @@ mod faction;
 mod faction_view;
 mod quest;
 mod quest_view;
-
-use crate::data::Data;
 
 fn main() {
     let mut siv = Cursive::new();

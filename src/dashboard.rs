@@ -1,13 +1,13 @@
+use crate::character::Character;
+use crate::faction_view;
+use crate::quest_view;
 use cursive::traits::*;
 use cursive::utils::Counter;
 use cursive::views::{Button, Dialog, DummyView, LinearLayout, ProgressBar, TextView};
 use cursive::Cursive;
 
-use crate::character::Character;
-use crate::faction_view;
-use crate::quest_view;
-
-pub fn draw(siv: &mut Cursive, character: &Character) {
+pub fn draw_view(siv: &mut Cursive, slug: String) {
+    let character = Character::from_slug(siv, slug.clone());
     let lvl_progress_bar = LinearLayout::vertical()
         .child(TextView::new(format!("Level : {}", character.lvl)))
         .child(
@@ -50,17 +50,22 @@ pub fn draw(siv: &mut Cursive, character: &Character) {
 
     let buttons = LinearLayout::horizontal()
         .child(Button::new("Quests", {
-            let quests = character.quests.clone();
-            move |s| quest_view::draw_view(s, quests.clone())
+            let slug = slug.clone();
+            move |siv| quest_view::draw_view(siv, slug.clone())
         }))
         .child(DummyView)
         .child(Button::new("Factions", {
-            let factions = character.factions.clone();
-            move |s| faction_view::draw_view(s, factions.clone())
+            siv.pop_layer();
+            let slug = slug.clone();
+            move |siv| faction_view::draw_view(siv, slug.clone())
         }));
 
     character_info.add_child(buttons);
 
     siv.pop_layer();
-    siv.add_layer(Dialog::around(character_info).fixed_size((80, 20)));
+    siv.add_layer(
+        Dialog::around(character_info)
+            .with_name("dashboard")
+            .fixed_size((80, 20)),
+    );
 }

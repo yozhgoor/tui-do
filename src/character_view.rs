@@ -1,11 +1,10 @@
-use cursive::traits::*;
-use cursive::views::{Button, Dialog, DummyView, EditView, LinearLayout, SelectView, TextView};
-use cursive::Cursive;
-
 use crate::character;
 use crate::character::{Character, Class};
 use crate::dashboard;
 use crate::data::Data;
+use cursive::traits::*;
+use cursive::views::{Button, Dialog, DummyView, EditView, LinearLayout, SelectView, TextView};
+use cursive::Cursive;
 
 pub fn draw_view(siv: &mut Cursive) {
     let character_list = &mut siv.user_data::<Data>().unwrap().character_list;
@@ -14,12 +13,13 @@ pub fn draw_view(siv: &mut Cursive) {
     }
 
     let character_select = SelectView::<Character>::new()
-        .on_submit(|siv, c| dashboard::draw(siv, c))
-        .with_all(
-            character_list
-                .iter()
-                .map(|(_, c)| (c.display_for_selection(), c.clone())),
-        )
+        .on_submit(|siv, character| dashboard::draw_view(siv, character.name.clone()))
+        .with_all(character_list.iter().map(|(_, used_character)| {
+            (
+                used_character.display_for_selection(),
+                used_character.clone(),
+            )
+        }))
         .with_name("character_select")
         .fixed_size((80, 20));
 
@@ -80,22 +80,22 @@ pub fn select_class(siv: &mut Cursive, name: &str) {
             .item("Hunter", Class::Hunter)
             .item("Rogue", Class::Rogue)
             .item("Mage", Class::Mage)
-            .on_select(|siv, item| {
-                let content = match *item {
+            .on_select(|siv, class| {
+                let content = match *class {
                     Class::Warrior => "Warrior: Gain more exp on Special Quest",
                     Class::Hunter => "Hunter: Gain more exp on Daily Quest",
                     Class::Rogue => "Rogue: Gain more money but less exp on each Quest",
                     Class::Mage => "Mage: Gain more exp but less money on each Quest",
                 };
 
-                // Update the Text view with the presentation for each class
+                // Update the TextView with the presentation for each class
                 siv.call_on_name("presentation", |view: &mut TextView| {
                     view.set_content(content);
                 })
                 .unwrap();
             })
-            .on_submit(move |siv, item| {
-                let character = Character::new(name.to_string(), item.clone());
+            .on_submit(move |siv, class| {
+                let character = Character::new(name.to_string(), class.clone());
 
                 siv.with_user_data(|data: &mut Data| {
                     data.character_list

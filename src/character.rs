@@ -1,5 +1,7 @@
+use crate::data::Data;
 use crate::faction::Faction;
 use crate::quest::Quest;
+use cursive::Cursive;
 
 #[derive(Clone)]
 pub struct Character {
@@ -32,6 +34,14 @@ impl Character {
             self.class.display(),
             self.lvl
         )
+    }
+
+    pub fn from_slug(siv: &mut Cursive, slug: String) -> &mut Self {
+        siv.user_data::<Data>()
+            .unwrap()
+            .character_list
+            .get_mut(&slug)
+            .unwrap()
     }
 }
 
