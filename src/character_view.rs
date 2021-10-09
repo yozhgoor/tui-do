@@ -56,56 +56,6 @@ pub fn create_item(siv: &mut Cursive) {
     );
 }
 
-pub fn delete_item(siv: &mut Cursive) {
-    let mut select = siv
-        .find_name::<SelectView<Character>>("character_select")
-        .unwrap();
-    match select.selected_id() {
-        None => siv.add_layer(Dialog::info("No character to remove")),
-        Some(focus) => {
-            select.remove_item(focus);
-        }
-    }
-}
-
-pub fn rename_item(siv: &mut Cursive) {
-    match siv
-        .find_name::<SelectView<Character>>("character_select")
-        .unwrap()
-        .selected_id()
-    {
-        None => siv.add_layer(Dialog::info("No character to rename")),
-        Some(focus) => {
-            siv.add_layer(
-                Dialog::new()
-                    .title("Enter a new name")
-                    .content(EditView::new().on_submit(move |siv, name| {
-                        let mut select = siv
-                            .find_name::<SelectView<Character>>("character_select")
-                            .unwrap();
-                        let user_data = siv.user_data::<Data>().unwrap();
-                        let (_, item) = select.get_item(focus).unwrap();
-                        let mut character = user_data.character_list.remove(&item.name).unwrap();
-
-                        character.name = name.to_string();
-                        user_data
-                            .character_list
-                            .insert(name.to_string(), character.clone());
-
-                        select.remove_item(focus);
-                        select.add_item(character.display_for_selection(), character);
-
-                        siv.pop_layer();
-                    }))
-                    .button("Back", |siv| {
-                        siv.pop_layer();
-                    })
-                    .with_name("rename_character"),
-            );
-        }
-    }
-}
-
 pub fn select_class(siv: &mut Cursive, name: &str) {
     let name = name.to_string();
     if name.is_empty() {
@@ -149,5 +99,55 @@ pub fn select_class(siv: &mut Cursive, name: &str) {
             Dialog::around(LinearLayout::vertical().child(select_view).child(text_view))
                 .title("Pick a class"),
         )
+    }
+}
+
+pub fn rename_item(siv: &mut Cursive) {
+    match siv
+        .find_name::<SelectView<Character>>("character_select")
+        .unwrap()
+        .selected_id()
+    {
+        None => siv.add_layer(Dialog::info("No character to rename")),
+        Some(focus) => {
+            siv.add_layer(
+                Dialog::new()
+                    .title("Enter a new name")
+                    .content(EditView::new().on_submit(move |siv, name| {
+                        let mut select = siv
+                            .find_name::<SelectView<Character>>("character_select")
+                            .unwrap();
+                        let user_data = siv.user_data::<Data>().unwrap();
+                        let (_, item) = select.get_item(focus).unwrap();
+                        let mut character = user_data.character_list.remove(&item.name).unwrap();
+
+                        character.name = name.to_string();
+                        user_data
+                            .character_list
+                            .insert(name.to_string(), character.clone());
+
+                        select.remove_item(focus);
+                        select.add_item(character.display_for_selection(), character);
+
+                        siv.pop_layer();
+                    }))
+                    .button("Back", |siv| {
+                        siv.pop_layer();
+                    })
+                    .with_name("rename_character"),
+            );
+        }
+    }
+}
+
+pub fn delete_item(siv: &mut Cursive) {
+    let mut select = siv
+        .find_name::<SelectView<Character>>("character_select")
+        .unwrap();
+    match select.selected_id() {
+        None => siv.add_layer(Dialog::info("No character to remove")),
+        Some(focus) => {
+            select.remove_item(focus);
+        }
     }
 }
