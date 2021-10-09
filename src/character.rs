@@ -2,6 +2,7 @@ use crate::data::Data;
 use crate::faction::Faction;
 use crate::quest::Quest;
 use cursive::Cursive;
+use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct Character {
@@ -11,7 +12,7 @@ pub struct Character {
     pub exp: u32,
     pub money: u32,
     pub factions: Vec<Faction>,
-    pub quests: Vec<Quest>,
+    pub quests: HashMap<String, Vec<Quest>>,
 }
 
 impl Character {
@@ -23,7 +24,7 @@ impl Character {
             exp: 0,
             money: 0,
             factions: Vec::new(),
-            quests: Vec::new(),
+            quests: HashMap::new(),
         }
     }
 
@@ -84,7 +85,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 0,
                 },
             ],
-            quests: vec![],
+            quests: HashMap::new(),
         },
         Character {
             name: String::from("Gandalf"),
@@ -104,7 +105,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 50,
                 },
             ],
-            quests: vec![],
+            quests: HashMap::new(),
         },
         Character {
             name: String::from("Legolas"),
@@ -124,7 +125,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 40,
                 },
             ],
-            quests: vec![],
+            quests: HashMap::new(),
         },
         Character {
             name: String::from("Gimli"),
@@ -144,7 +145,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 40,
                 },
             ],
-            quests: vec![],
+            quests: HashMap::new(),
         },
     ]
 }
