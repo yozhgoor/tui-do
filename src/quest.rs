@@ -1,14 +1,18 @@
 use std::collections::HashMap;
 
+pub type Checkboxes = HashMap<String, bool>;
+pub type Lists = HashMap<String, Checkboxes>;
+
 #[derive(Clone)]
 pub struct Quest {
     pub title: String,
     pub description: String,
     pub status: QuestStatus,
     pub link: String,
-    pub kind: QuestKind,
+    pub kind: Kind,
     // due_date: Date,
-    pub checklist: HashMap<String, bool>,
+    pub checkboxes: Checkboxes,
+    pub lists: Lists,
     // reward: Reward,
 }
 
@@ -17,8 +21,9 @@ impl Quest {
         title: String,
         description: String,
         link: String,
-        kind: QuestKind,
-        checklist: HashMap<String, bool>,
+        kind: Kind,
+        checkboxes: Checkboxes,
+        lists: Lists,
     ) -> Quest {
         Quest {
             title,
@@ -26,31 +31,33 @@ impl Quest {
             status: QuestStatus::Pending,
             link,
             kind,
-            checklist,
+            checkboxes,
+            lists,
         }
     }
     pub fn display_for_presentation(&self) -> String {
         format!(
-            "{} - {} - {} | {}",
+            "{} - {} - {} | {} todos, {} lists",
             self.title,
             self.status.display(),
             self.kind.display(),
-            self.checklist.len()
+            self.checkboxes.len(),
+            self.lists.len(),
         )
     }
 }
 
 #[derive(Clone)]
-pub enum QuestKind {
+pub enum Kind {
     Daily,
     Special,
 }
 
-impl QuestKind {
+impl Kind {
     fn display(&self) -> &str {
         match self {
-            QuestKind::Daily => "Daily",
-            QuestKind::Special => "Special",
+            Kind::Daily => "Daily",
+            Kind::Special => "Special",
         }
     }
 }
@@ -58,16 +65,16 @@ impl QuestKind {
 #[derive(Clone)]
 pub enum QuestStatus {
     Pending,
-    InProgress,
-    Done,
+    // InProgress,
+    // Done,
 }
 
 impl QuestStatus {
     pub fn display(&self) -> &str {
         match self {
             QuestStatus::Pending => "Pending",
-            QuestStatus::InProgress => "In Progress",
-            QuestStatus::Done => "Done",
+            // QuestStatus::InProgress => "In Progress",
+            // QuestStatus::Done => "Done",
         }
     }
 }
