@@ -11,8 +11,6 @@ use cursive::Cursive;
 use cursive_tabs::TabPanel;
 
 pub fn draw_view(siv: &mut Cursive, slug: String) {
-    let slug = slug.clone();
-
     siv.pop_layer();
     let character = Character::from_slug(siv, slug.clone());
 
@@ -61,7 +59,7 @@ fn create_tab(label: String, quests: Vec<Quest>) -> NamedView<Dialog> {
 }
 
 fn add_item(siv: &mut Cursive, slug: String) {
-    let character = Character::from_slug(siv, slug.clone());
+    let character = Character::from_slug(siv, slug);
 
     let title = LinearLayout::vertical()
         .child(TextView::new("Title:"))
