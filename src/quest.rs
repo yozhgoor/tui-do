@@ -54,7 +54,7 @@ pub enum Kind {
 }
 
 impl Kind {
-    fn display(&self) -> &str {
+    pub fn display(&self) -> &str {
         match self {
             Kind::Daily => "Daily",
             Kind::Special => "Special",

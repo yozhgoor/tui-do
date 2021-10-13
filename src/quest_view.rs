@@ -66,12 +66,12 @@ fn add_item(siv: &mut Cursive, slug: String) {
     let title = LinearLayout::vertical()
         .child(TextView::new("Title:"))
         .child(DummyView)
-        .child(TextArea::new().content("").with_name("quest_title"));
+        .child(TextArea::new().with_name("quest_title"));
 
     let description = LinearLayout::vertical()
         .child(TextView::new("Description:"))
         .child(DummyView)
-        .child(TextArea::new().content("").with_name("quest_description"));
+        .child(TextArea::new().with_name("quest_description"));
 
     let mut link_select = SelectView::new().item(character.name.clone(), character.name.clone());
     for faction in character.factions.iter() {
@@ -119,10 +119,9 @@ fn add_item(siv: &mut Cursive, slug: String) {
         .child(lists_buttons);
 
     let buttons = LinearLayout::horizontal()
-        .child(Button::new("Save", move |siv| {
-            save_quest(siv, slug.clone())
+        .child(Button::new("View", |siv| {
+            view_quest(siv);
         }))
-        .child(DummyView)
         .child(Button::new("Back", move |siv| {
             siv.pop_layer();
         }));
@@ -188,14 +187,11 @@ fn add_list(siv: &mut Cursive) {
                     let checkboxes = siv
                         .call_on_name("list_checkboxes", |view: &mut ListView| {
                             let mut checkboxes = Checkboxes::new();
-                            for child in view.children() {
-                                match child {
-                                    ListChild::Row(label, boxed_view) => {
-                                        if let Some(view) = boxed_view.downcast_ref::<Checkbox>() {
-                                            checkboxes.insert(label.clone(), view.is_checked());
-                                        };
-                                    }
-                                    _ => {}
+                            for listchild in view.children() {
+                                if let ListChild::Row(label, boxed_view) = listchild {
+                                    if let Some(view) = boxed_view.downcast_ref::<Checkbox>() {
+                                        checkboxes.insert(label.clone(), view.is_checked());
+                                    };
                                 }
                             }
                             checkboxes
@@ -212,10 +208,7 @@ fn add_list(siv: &mut Cursive) {
                     }
 
                     siv.call_on_name("lists", |view: &mut ListView| {
-                        view.add_child(
-                            &list_name,
-                            checkboxes_view.with_name(format!("{}", list_name)),
-                        )
+                        view.add_child(&list_name, checkboxes_view.with_name(&list_name))
                     });
                     siv.pop_layer();
                     siv.pop_layer();
@@ -265,28 +258,28 @@ fn remove_checkbox(siv: &mut Cursive) {
     });
 }
 
-fn save_quest(siv: &mut Cursive, slug: String) {
+fn view_quest(siv: &mut Cursive) {
     let title = siv
-        .call_on_name("quest_title", |view: &mut EditView| view.get_content())
+        .call_on_name("quest_title", |view: &mut TextArea| {
+            view.get_content().to_owned()
+        })
         .unwrap();
 
     let description = siv
         .call_on_name("quest_description", |view: &mut TextArea| {
-            view.get_content().to_string()
+            view.get_content().to_owned()
         })
         .unwrap();
 
     let link = siv
-        .call_on_name("link_select", |view: &mut SelectView<String>| {
+        .call_on_name("link_select", |view: &mut SelectView| {
             view.selection().unwrap()
         })
         .unwrap();
 
     let kind = siv
         .call_on_name("kind_select", |view: &mut SelectView<Kind>| {
-            let id = view.selected_id().unwrap();
-            let (_, value) = view.get_item(id).unwrap();
-            value.clone()
+            view.selection().unwrap()
         })
         .unwrap();
 
@@ -294,13 +287,10 @@ fn save_quest(siv: &mut Cursive, slug: String) {
         .call_on_name("checkboxes", |view: &mut ListView| {
             let mut checkboxes = Checkboxes::new();
             for listchild in view.children() {
-                match listchild {
-                    ListChild::Row(label, boxed_view) => {
-                        if let Some(unboxed_view) = boxed_view.downcast_ref::<Checkbox>() {
-                            checkboxes.insert(label.clone(), unboxed_view.is_checked());
-                        };
-                    }
-                    _ => {}
+                if let ListChild::Row(label, boxed_view) = listchild {
+                    if let Some(unboxed_view) = boxed_view.downcast_ref::<Checkbox>() {
+                        checkboxes.insert(label.clone(), unboxed_view.is_checked());
+                    };
                 }
             }
             checkboxes
@@ -311,13 +301,10 @@ fn save_quest(siv: &mut Cursive, slug: String) {
         .call_on_name("lists", |view: &mut ListView| {
             let mut list_names = Vec::new();
             for listchild in view.children() {
-                match listchild {
-                    ListChild::Row(label, boxed_view) => {
-                        if let Some(_) = boxed_view.downcast_ref::<TextView>() {
-                            list_names.push(label.clone())
-                        }
+                if let ListChild::Row(label, boxed_view) = listchild {
+                    if boxed_view.downcast_ref::<TextView>().is_some() {
+                        list_names.push(label.clone())
                     }
-                    _ => {}
                 }
             }
             list_names
@@ -327,38 +314,25 @@ fn save_quest(siv: &mut Cursive, slug: String) {
     let mut lists = Lists::new();
     for list_name in list_names {
         siv.call_on_name(&list_name, |view: &mut ListView| {
-            let mut list_checkboxes_map = Checkboxes::new();
+            let mut checkboxes = Checkboxes::new();
             for listchild in view.children() {
-                match listchild {
-                    ListChild::Row(label, boxed_view) => {
-                        if let Some(unboxed_view) = boxed_view.downcast_ref::<Checkbox>() {
-                            list_checkboxes_map.insert(label.clone(), unboxed_view.is_checked());
-                        };
-                    }
-                    _ => {}
+                if let ListChild::Row(label, boxed_view) = listchild {
+                    if let Some(unboxed_view) = boxed_view.downcast_ref::<Checkbox>() {
+                        checkboxes.insert(label.clone(), unboxed_view.is_checked());
+                    };
                 }
             }
-            lists.insert(list_name.clone(), list_checkboxes_map)
+            lists.insert(list_name.clone(), checkboxes);
         });
     }
 
-    if title.is_empty() {
-        siv.add_layer(Dialog::info("No Title given"));
-    } else {
-        let quest = Quest::new(
-            title.to_string(),
-            description,
-            link.to_string(),
-            kind,
-            checkboxes,
-            lists,
-        );
-
-        let character = Character::from_slug(siv, slug.clone());
-        if character.quests.contains_key(&quest.link) {
-            character.quests.get_mut(&quest.link).unwrap().push(quest);
-        } else {
-            character.quests.insert(quest.link.clone(), vec![quest]);
-        }
-    }
+    siv.add_layer(Dialog::info(format!(
+        "{}\n{}\n{}\n{}\n{:?}\n{:?}",
+        title,
+        description,
+        link,
+        kind.display(),
+        checkboxes,
+        lists,
+    )));
 }
