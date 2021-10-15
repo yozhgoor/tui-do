@@ -1,18 +1,15 @@
 use std::collections::HashMap;
 
-pub type Checkboxes = HashMap<String, bool>;
-pub type Lists = HashMap<String, Checkboxes>;
-
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Quest {
     pub title: String,
     pub description: String,
     pub status: QuestStatus,
     pub link: String,
-    pub kind: Kind,
+    pub daily_quest: bool,
+    pub checkboxes: HashMap<String, bool>,
     // due_date: Date,
-    pub checkboxes: Checkboxes,
-    pub lists: Lists,
+    // lists: Lists,
     // reward: Reward,
 }
 
@@ -21,48 +18,39 @@ impl Quest {
         title: String,
         description: String,
         link: String,
-        kind: Kind,
-        checkboxes: Checkboxes,
-        lists: Lists,
+        daily_quest: bool,
+        checkboxes: HashMap<String, bool>,
     ) -> Quest {
         Quest {
             title,
             description,
             status: QuestStatus::Pending,
             link,
-            kind,
+            daily_quest,
             checkboxes,
-            lists,
         }
     }
+
+    pub fn display_quest_kind(&self) -> &str {
+        if self.daily_quest {
+            "Daily quest"
+        } else {
+            "Main quest"
+        }
+    }
+
     pub fn display_for_presentation(&self) -> String {
         format!(
-            "{} - {} - {} | {} todos, {} lists",
+            "{} - {} - {} | {} todos",
             self.title,
             self.status.display(),
-            self.kind.display(),
+            self.display_quest_kind(),
             self.checkboxes.len(),
-            self.lists.len(),
         )
     }
 }
 
-#[derive(Clone)]
-pub enum Kind {
-    Daily,
-    Special,
-}
-
-impl Kind {
-    pub fn display(&self) -> &str {
-        match self {
-            Kind::Daily => "Daily",
-            Kind::Special => "Special",
-        }
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum QuestStatus {
     Pending,
     // InProgress,

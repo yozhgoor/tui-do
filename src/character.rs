@@ -12,7 +12,7 @@ pub struct Character {
     pub exp: u32,
     pub money: u32,
     pub factions: Vec<Faction>,
-    pub quests: HashMap<String, Vec<Quest>>,
+    pub quests: HashMap<String, HashMap<String, Quest>>,
 }
 
 impl Character {
