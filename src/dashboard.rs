@@ -1,7 +1,7 @@
 use crate::character::Character;
 use crate::character_view;
 use crate::faction_view;
-use crate::quest_view;
+use crate::quests_view;
 use cursive::traits::*;
 use cursive::utils::Counter;
 use cursive::views::{Button, Dialog, DummyView, LinearLayout, ProgressBar, TextView};
@@ -52,7 +52,7 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
     let buttons = LinearLayout::horizontal()
         .child(Button::new("Quests", {
             let slug = slug.clone();
-            move |siv| quest_view::draw_view(siv, slug.clone())
+            move |siv| quests_view::draw_view(siv, slug.clone())
         }))
         .child(DummyView)
         .child(Button::new("Factions", {

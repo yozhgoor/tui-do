@@ -9,6 +9,7 @@ mod faction;
 mod faction_view;
 mod quest;
 mod quest_view;
+mod quests_view;
 
 fn main() {
     let mut siv = Cursive::new();
