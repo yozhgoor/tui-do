@@ -212,5 +212,5 @@ fn save_quest(siv: &mut Cursive, slug: String) {
 
     siv.pop_layer();
 
-    draw_view(siv, slug.clone())
+    draw_view(siv, slug)
 }
