@@ -104,18 +104,6 @@ fn add_item(siv: &mut Cursive, slug: String) {
         .child(DummyView)
         .child(checkboxes_buttons);
 
-    let lists_buttons = LinearLayout::horizontal()
-        .child(Button::new("Add list", |siv| add_list(siv)))
-        .child(DummyView)
-        .child(Button::new("Remove list", |siv| remove_list(siv)));
-
-    let lists = LinearLayout::vertical()
-        .child(TextView::new("lists:"))
-        .child(DummyView)
-        .child(ListView::new().with_name("lists").scrollable())
-        .child(DummyView)
-        .child(lists_buttons);
-
     let buttons = LinearLayout::horizontal()
         .child(Button::new("View", |siv| {
             view_quest(siv);
@@ -137,102 +125,10 @@ fn add_item(siv: &mut Cursive, slug: String) {
                 .child(DummyView)
                 .child(checkboxes)
                 .child(DummyView)
-                .child(lists)
-                .child(DummyView)
                 .child(buttons),
         )
         .fixed_size((80, 40)),
     );
-}
-
-fn add_list(siv: &mut Cursive) {
-    siv.add_layer(
-        Dialog::around(EditView::new().on_submit(|siv, label| {
-            let list_name = TextView::new(label).with_name("list_name");
-            let list_overview = LinearLayout::vertical()
-                .child(list_name)
-                .child(DummyView)
-                .child(ListView::new().with_name("list_checkboxes"));
-
-            let list_buttons = LinearLayout::horizontal()
-                .child(Button::new("Add Checkbox", |siv| {
-                    siv.add_layer(
-                        Dialog::around(EditView::new().on_submit(|siv, label| {
-                            siv.call_on_name("list_checkboxes", |view: &mut ListView| {
-                                view.add_child(label, Checkbox::new());
-                            });
-                            siv.pop_layer();
-                        }))
-                        .button("Back", |siv| {
-                            siv.pop_layer();
-                        }),
-                    )
-                }))
-                .child(DummyView)
-                .child(Button::new("Remove checkbox", |siv| {
-                    siv.call_on_name("list_checkboxes", |view: &mut ListView| {
-                        view.remove_child(view.focus())
-                    });
-                }))
-                .child(DummyView)
-                .child(Button::new("Save List", |siv| {
-                    let list_name = siv
-                        .call_on_name("list_name", |view: &mut TextView| {
-                            view.get_content().source().to_string()
-                        })
-                        .unwrap();
-
-                    let checkboxes = siv
-                        .call_on_name("list_checkboxes", |view: &mut ListView| {
-                            let mut checkboxes = Checkboxes::new();
-                            for listchild in view.children() {
-                                if let ListChild::Row(label, boxed_view) = listchild {
-                                    if let Some(view) = boxed_view.downcast_ref::<Checkbox>() {
-                                        checkboxes.insert(label.clone(), view.is_checked());
-                                    };
-                                }
-                            }
-                            checkboxes
-                        })
-                        .unwrap();
-
-                    let mut checkboxes_view = ListView::new();
-                    for (label, checkbox_value) in checkboxes {
-                        if checkbox_value {
-                            checkboxes_view.add_child(&label, Checkbox::new().checked());
-                        } else {
-                            checkboxes_view.add_child(&label, Checkbox::new());
-                        }
-                    }
-
-                    siv.call_on_name("lists", |view: &mut ListView| {
-                        view.add_child(&list_name, checkboxes_view.with_name(&list_name))
-                    });
-                    siv.pop_layer();
-                    siv.pop_layer();
-                }))
-                .child(Button::new("Back", |siv| {
-                    siv.pop_layer();
-                }));
-
-            siv.add_layer(Dialog::around(
-                LinearLayout::vertical()
-                    .child(list_overview)
-                    .child(DummyView)
-                    .child(list_buttons),
-            ))
-        }))
-        .title("Insert a label")
-        .button("Back", |siv| {
-            siv.pop_layer();
-        }),
-    );
-}
-
-fn remove_list(siv: &mut Cursive) {
-    siv.call_on_name("lists", |view: &mut ListView| {
-        view.remove_child(view.focus())
-    });
 }
 
 fn add_checkbox(siv: &mut Cursive) {
@@ -295,42 +191,12 @@ fn view_quest(siv: &mut Cursive) {
         })
         .unwrap();
 
-    let list_names = siv
-        .call_on_name("lists", |view: &mut ListView| {
-            let mut list_names = Vec::new();
-            for listchild in view.children() {
-                if let ListChild::Row(label, boxed_view) = listchild {
-                    if boxed_view.downcast_ref::<TextView>().is_some() {
-                        list_names.push(label.clone())
-                    }
-                }
-            }
-            list_names
-        })
-        .unwrap();
-
-    let mut lists = Lists::new();
-    for list_name in list_names {
-        siv.call_on_name(&list_name, |view: &mut ListView| {
-            let mut checkboxes = Checkboxes::new();
-            for listchild in view.children() {
-                if let ListChild::Row(label, boxed_view) = listchild {
-                    if let Some(unboxed_view) = boxed_view.downcast_ref::<Checkbox>() {
-                        checkboxes.insert(label.clone(), unboxed_view.is_checked());
-                    };
-                }
-            }
-            lists.insert(list_name.clone(), checkboxes);
-        });
-    }
-
     siv.add_layer(Dialog::info(format!(
-        "{}\n{}\n{}\n{}\n{:?}\n{:?}",
+        "{}\n{}\n{}\n{}\n{:?}",
         title,
         description,
         link,
         kind.display(),
         checkboxes,
-        lists,
     )));
 }
