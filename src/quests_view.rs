@@ -20,7 +20,7 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
 
     let mut panel = TabPanel::new();
     for (label, quests) in character.quests.clone() {
-        panel.add_tab(create_tab(label.clone(), quests.clone()))
+        panel.add_tab(create_tab(slug.clone(), label.clone(), quests.clone()))
     }
 
     let frame = if character.quests.is_empty() {
@@ -37,7 +37,7 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
             .child(frame)
             .child(Button::new("Add", {
                 let slug = slug.clone();
-                move |siv| add_item(siv, slug.clone())
+                move |siv| add_quest(siv, slug.clone())
             }))
             .child(DummyView)
             .child(Button::new("Back", {
@@ -49,7 +49,7 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
     ));
 }
 
-fn create_tab(label: String, quests: HashMap<String, Quest>) -> NamedView<Dialog> {
+fn create_tab(slug: String, label: String, quests: HashMap<String, Quest>) -> NamedView<Dialog> {
     let mut quests_select = SelectView::<Quest>::new();
     for (_, quest) in quests {
         quests_select.add_item(quest.display_for_presentation(), quest)
@@ -60,8 +60,8 @@ fn create_tab(label: String, quests: HashMap<String, Quest>) -> NamedView<Dialog
             .child(DummyView)
             .child(
                 quests_select
-                    .on_submit(|siv, item| {
-                        quest_view::draw_view(siv, item.clone());
+                    .on_submit(move |siv, item| {
+                        quest_view::draw_view(siv, slug.clone(), item.clone());
                     })
                     .with_name("quests_select"),
             ),
@@ -69,7 +69,7 @@ fn create_tab(label: String, quests: HashMap<String, Quest>) -> NamedView<Dialog
     .with_name(label)
 }
 
-fn add_item(siv: &mut Cursive, slug: String) {
+fn add_quest(siv: &mut Cursive, slug: String) {
     let character = Character::from_slug(siv, slug.clone());
 
     let title = LinearLayout::vertical()
@@ -136,7 +136,7 @@ fn add_item(siv: &mut Cursive, slug: String) {
     );
 }
 
-fn add_checkbox(siv: &mut Cursive) {
+pub fn add_checkbox(siv: &mut Cursive) {
     siv.add_layer(
         Dialog::around(EditView::new().on_submit(|siv, label| {
             siv.call_on_name("checkboxes", |view: &mut ListView| {
@@ -151,7 +151,7 @@ fn add_checkbox(siv: &mut Cursive) {
     )
 }
 
-fn remove_checkbox(siv: &mut Cursive) {
+pub fn remove_checkbox(siv: &mut Cursive) {
     siv.call_on_name("checkboxes", |view: &mut ListView| {
         view.remove_child(view.focus())
     });
