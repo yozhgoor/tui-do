@@ -80,7 +80,7 @@ pub fn mock() -> Vec<Character> {
 
     let mut fellowship_of_the_ring_quests = Quests::new();
     let fellowship_of_the_ring_quest = Quest::new(
-        "Throw the ring into big fire in a mountain".to_string(),
+        "Throw the ring into a big fire in a mountain".to_string(),
         "It's a very big fire".to_string(),
         "Fellowship of the Ring".to_string(),
         false,

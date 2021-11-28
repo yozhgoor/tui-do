@@ -8,7 +8,6 @@ use cursive::{
 pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
     siv.pop_layer();
 
-    let title = TextView::new(quest.title);
     let description = TextView::new(quest.description);
     let status = LinearLayout::horizontal()
         .child(TextView::new("Status: "))
@@ -35,7 +34,6 @@ pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
     }
 
     let quest_card = LinearLayout::vertical()
-        .child(title)
         .child(DummyView)
         .child(description)
         .child(DummyView)
@@ -55,17 +53,20 @@ pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
         .child(DummyView)
         .child(Button::new("Delete quest", |_siv| todo!("delete quest")));
 
-    siv.add_layer(Dialog::around(
-        LinearLayout::vertical()
-            .child(quest_card)
-            .child(DummyView)
-            .child(quest_buttons)
-            .child(DummyView)
-            .child(Button::new("Back", {
-                move |siv| {
-                    siv.pop_layer();
-                    quests_view::draw_view(siv, slug.clone());
-                }
-            })),
-    ))
+    siv.add_layer(
+        Dialog::around(
+            LinearLayout::vertical()
+                .child(quest_card)
+                .child(DummyView)
+                .child(quest_buttons)
+                .child(DummyView)
+                .child(Button::new("Back", {
+                    move |siv| {
+                        siv.pop_layer();
+                        quests_view::draw_view(siv, slug.clone());
+                    }
+                })),
+        )
+        .title(quest.title),
+    )
 }
