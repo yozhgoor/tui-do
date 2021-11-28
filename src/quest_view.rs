@@ -1,30 +1,15 @@
 use crate::quest::Quest;
 use crate::quests_view;
-use cursive::view::Nameable;
 use cursive::{
-    views::{Button, Dialog, DummyView, LinearLayout, ListView, TextArea, TextView},
+    views::{Button, Dialog, DummyView, LinearLayout, TextView},
     Cursive,
 };
 
 pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
     siv.pop_layer();
 
-    let title = LinearLayout::vertical()
-        .child(TextView::new("Title:"))
-        .child(DummyView)
-        .child(
-            TextArea::new()
-                .content(quest.title)
-                .with_name("quest_title"),
-        );
-    let description = LinearLayout::vertical()
-        .child(TextView::new("Description:"))
-        .child(DummyView)
-        .child(
-            TextArea::new()
-                .content(quest.description)
-                .with_name("quest_description"),
-        );
+    let title = TextView::new(quest.title);
+    let description = TextView::new(quest.description);
     let status = LinearLayout::horizontal()
         .child(TextView::new("Status: "))
         .child(TextView::new(quest.status.display()));
@@ -39,21 +24,15 @@ pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
         TextView::new("Main quest")
     };
 
-    let checkboxes_buttons = LinearLayout::horizontal()
-        .child(Button::new("Add checkbox", |siv| {
-            quests_view::add_checkbox(siv)
-        }))
-        .child(DummyView)
-        .child(Button::new("Remove checkbox", |siv| {
-            quests_view::remove_checkbox(siv)
-        }));
+    let mut checkboxes = LinearLayout::vertical();
 
-    let checkboxes = LinearLayout::vertical()
-        .child(TextView::new("Todos:"))
-        .child(DummyView)
-        .child(ListView::new().with_name("checkboxes"))
-        .child(DummyView)
-        .child(checkboxes_buttons);
+    for (label, state) in quest.checkboxes {
+        if state {
+            checkboxes.add_child(TextView::new(format!("{} : [*]", label)));
+        } else {
+            checkboxes.add_child(TextView::new(format!("{} : [ ]", label)));
+        }
+    }
 
     let quest_card = LinearLayout::vertical()
         .child(title)
@@ -71,6 +50,11 @@ pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
         LinearLayout::vertical()
             .child(quest_card)
             .child(DummyView)
+            .child(Button::new("Edit quest", |_siv| todo!("edit quest")))
+            .child(Button::new("Change status", |_siv| {
+                todo!("change quest status")
+            }))
+            .child(Button::new("Delete quest", |_siv| todo!("delete quest")))
             .child(Button::new("Back", {
                 move |siv| {
                     siv.pop_layer();
