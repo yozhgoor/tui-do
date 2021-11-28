@@ -1,10 +1,13 @@
 use crate::data::Data;
 use crate::faction::Faction;
-use crate::quest::Quest;
+use crate::quest::{Checkboxes, Quest};
 use cursive::Cursive;
 use std::collections::HashMap;
 
-#[derive(Clone)]
+type CharacterQuests = HashMap<String, Quests>;
+type Quests = HashMap<String, Quest>;
+
+#[derive(Debug, Clone)]
 pub struct Character {
     pub name: String,
     pub class: Class,
@@ -12,7 +15,7 @@ pub struct Character {
     pub exp: u32,
     pub money: u32,
     pub factions: Vec<Faction>,
-    pub quests: HashMap<String, HashMap<String, Quest>>,
+    pub character_quests: CharacterQuests,
 }
 
 impl Character {
@@ -24,7 +27,7 @@ impl Character {
             exp: 0,
             money: 0,
             factions: Vec::new(),
-            quests: HashMap::new(),
+            character_quests: CharacterQuests::new(),
         }
     }
 
@@ -46,7 +49,7 @@ impl Character {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum Class {
     Warrior,
     Hunter,
@@ -66,6 +69,86 @@ impl Class {
 }
 
 pub fn mock() -> Vec<Character> {
+    let mut frodo_character_quests = CharacterQuests::new();
+    let mut gandalf_character_quests = CharacterQuests::new();
+    let mut legolas_character_quests = CharacterQuests::new();
+    let mut gimli_character_quests = CharacterQuests::new();
+    let mut frodo_quests = Quests::new();
+    let mut gandalf_quests = Quests::new();
+    let mut legolas_quests = Quests::new();
+    let mut gimli_quests = Quests::new();
+
+    let mut fellowship_of_the_ring_quests = Quests::new();
+    let fellowship_of_the_ring_quest = Quest::new(
+        "Throw the ring into big fire in a mountain".to_string(),
+        "It's a very big fire".to_string(),
+        "Fellowship of the Ring".to_string(),
+        false,
+        Checkboxes::new(),
+    );
+    fellowship_of_the_ring_quests.insert(
+        fellowship_of_the_ring_quest.title.clone(),
+        fellowship_of_the_ring_quest,
+    );
+
+    let frodo_quest = Quest::new(
+        "Bring the ring into Mordor".to_string(),
+        "It's a very powerful ring".to_string(),
+        "Frodo".to_string(),
+        false,
+        Checkboxes::new(),
+    );
+    frodo_quests.insert(frodo_quest.title.clone(), frodo_quest);
+
+    let istari_quest = Quest::new(
+        "Counsel and assist all those who opposed the Dark Lord Sauron".to_string(),
+        "Mission of the five istari sent in Middle-Earth".to_string(),
+        "Istari".to_string(),
+        false,
+        Checkboxes::new(),
+    );
+    gandalf_quests.insert(istari_quest.title.clone(), istari_quest);
+
+    let legolas_quest = Quest::new(
+        "Sharpen arrowhead".to_string(),
+        "Be always ready".to_string(),
+        "Legolas".to_string(),
+        true,
+        Checkboxes::new(),
+    );
+    legolas_quests.insert(legolas_quest.title.clone(), legolas_quest);
+
+    let gimli_quest = Quest::new(
+        "Sharpen axe".to_string(),
+        "Too loud for the elf, so it's funny".to_string(),
+        "Gimli".to_string(),
+        true,
+        Checkboxes::new(),
+    );
+    gimli_quests.insert(gimli_quest.title.clone(), gimli_quest);
+
+    frodo_character_quests.insert("Frodo".to_string(), frodo_quests);
+    gandalf_character_quests.insert("Istari".to_string(), gandalf_quests);
+    legolas_character_quests.insert("Legolas".to_string(), legolas_quests);
+    gimli_character_quests.insert("Gimli".to_string(), gimli_quests);
+
+    frodo_character_quests.insert(
+        "Fellowship of the Ring".to_string(),
+        fellowship_of_the_ring_quests.clone(),
+    );
+    gandalf_character_quests.insert(
+        "Fellowship of the Ring".to_string(),
+        fellowship_of_the_ring_quests.clone(),
+    );
+    legolas_character_quests.insert(
+        "Fellowship of the Ring".to_string(),
+        fellowship_of_the_ring_quests.clone(),
+    );
+    gimli_character_quests.insert(
+        "Fellowship of the Ring".to_string(),
+        fellowship_of_the_ring_quests.clone(),
+    );
+
     vec![
         Character {
             name: String::from("Frodo"),
@@ -85,7 +168,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 0,
                 },
             ],
-            quests: HashMap::new(),
+            character_quests: frodo_character_quests,
         },
         Character {
             name: String::from("Gandalf"),
@@ -105,7 +188,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 50,
                 },
             ],
-            quests: HashMap::new(),
+            character_quests: gandalf_character_quests,
         },
         Character {
             name: String::from("Legolas"),
@@ -125,7 +208,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 40,
                 },
             ],
-            quests: HashMap::new(),
+            character_quests: legolas_character_quests,
         },
         Character {
             name: String::from("Gimli"),
@@ -145,7 +228,7 @@ pub fn mock() -> Vec<Character> {
                     lvl: 40,
                 },
             ],
-            quests: HashMap::new(),
+            character_quests: gimli_character_quests,
         },
     ]
 }

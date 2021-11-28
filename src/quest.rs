@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+pub type Checkboxes = HashMap<String, bool>;
+
 #[derive(Clone, Debug)]
 pub struct Quest {
     pub title: String,
@@ -7,7 +9,7 @@ pub struct Quest {
     pub status: QuestStatus,
     pub link: String,
     pub daily_quest: bool,
-    pub checkboxes: HashMap<String, bool>,
+    pub checkboxes: Checkboxes,
     // due_date: Date,
     // lists: Lists,
     // reward: Reward,

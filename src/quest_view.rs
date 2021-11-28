@@ -46,15 +46,21 @@ pub fn draw_view(siv: &mut Cursive, slug: String, quest: Quest) {
         .child(kind)
         .child(checkboxes);
 
+    let quest_buttons = LinearLayout::horizontal()
+        .child(Button::new("Edit quest", |_siv| todo!("edit quest")))
+        .child(DummyView)
+        .child(Button::new("Change status", |_siv| {
+            todo!("change quest status")
+        }))
+        .child(DummyView)
+        .child(Button::new("Delete quest", |_siv| todo!("delete quest")));
+
     siv.add_layer(Dialog::around(
         LinearLayout::vertical()
             .child(quest_card)
             .child(DummyView)
-            .child(Button::new("Edit quest", |_siv| todo!("edit quest")))
-            .child(Button::new("Change status", |_siv| {
-                todo!("change quest status")
-            }))
-            .child(Button::new("Delete quest", |_siv| todo!("delete quest")))
+            .child(quest_buttons)
+            .child(DummyView)
             .child(Button::new("Back", {
                 move |siv| {
                     siv.pop_layer();

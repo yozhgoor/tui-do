@@ -16,14 +16,12 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
     siv.pop_layer();
     let character = Character::from_slug(siv, slug.clone());
 
-    let character_quests_debug = TextView::new(format!("{:?}", character.quests.clone()));
-
     let mut panel = TabPanel::new();
-    for (label, quests) in character.quests.clone() {
+    for (label, quests) in character.character_quests.clone() {
         panel.add_tab(create_tab(slug.clone(), label.clone(), quests.clone()))
     }
 
-    let frame = if character.quests.is_empty() {
+    let frame = if character.character_quests.is_empty() {
         LinearLayout::vertical()
             .child(TextView::new("Click Add to create a quest"))
             .child(DummyView)
@@ -33,7 +31,6 @@ pub fn draw_view(siv: &mut Cursive, slug: String) {
 
     siv.add_layer(Dialog::around(
         LinearLayout::vertical()
-            .child(character_quests_debug)
             .child(frame)
             .child(Button::new("Add", {
                 let slug = slug.clone();
@@ -198,7 +195,7 @@ fn save_quest(siv: &mut Cursive, slug: String) {
 
     let quest = Quest::new(title, description, link.to_string(), kind, checkboxes);
 
-    if let Some(quests) = character.quests.get_mut(&quest.link) {
+    if let Some(quests) = character.character_quests.get_mut(&quest.link) {
         if quests.contains_key(&quest.title) {
             Dialog::info("This quest already exist");
         } else {
@@ -207,7 +204,7 @@ fn save_quest(siv: &mut Cursive, slug: String) {
     } else {
         let mut map = HashMap::new();
         map.insert(quest.title.clone(), quest.clone());
-        character.quests.insert(quest.link, map);
+        character.character_quests.insert(quest.link, map);
     }
 
     siv.pop_layer();
